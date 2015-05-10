@@ -1,11 +1,12 @@
 package com.cloudera.se.hbase.test.util;
 
+import com.cloudera.se.hbase.test.model.DataModelConsts;
 import com.cloudera.se.hbase.test.model.Event;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy.PascalCaseStrategy;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.client.HConnection;
+import org.apache.hadoop.hbase.client.HConnectionManager;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.log4j.Logger;
 
@@ -18,9 +19,9 @@ import java.util.List;
 /**
  * Created by jholoman on 5/9/15.
  */
-public class EventUtils {
+public class Tester {
 
-    private static final Logger log = Logger.getLogger(EventUtils.class);
+    private static final Logger log = Logger.getLogger(Tester.class);
 
     private final static ObjectMapper mapper = new ObjectMapper();
 
@@ -43,9 +44,8 @@ public class EventUtils {
         List<Put> table4PutList = new ArrayList<Put>();
         List<Put> table5PutList = new ArrayList<Put>();
 
-        for (long nEvents = 0; nEvents < events ; nEvents++) {
+        for (long nEvents = 0; nEvents < events; nEvents++) {
             Event event = new Event();
-            printJson(event);
             table1PutList.add(CEHUtils.getTable1Put(event));
             table2PutList.add(CEHUtils.getTable2Put(event));
             table3PutList.add(CEHUtils.getTable3Put(event));
@@ -53,16 +53,25 @@ public class EventUtils {
             table5PutList.add(CEHUtils.getTable5Put(event));
 
         }
+        Configuration config = HBaseConfiguration.addHbaseResources(new Configuration());
+
+        HConnection connection = HConnectionManager.createConnection(config);
+
+        System.out.println("Starting");
+        long startTime = System.currentTimeMillis();
+        CEHUtils.insertToTable(connection,table1PutList, DataModelConsts.TABLE1);
+        CEHUtils.insertToTable(connection,table2PutList, DataModelConsts.TABLE2);
+        CEHUtils.insertToTable(connection,table3PutList, DataModelConsts.TABLE3);
+        CEHUtils.insertToTable(connection,table4PutList, DataModelConsts.TABLE4);
+        CEHUtils.insertToTable(connection,table5PutList, DataModelConsts.TABLE5);
+        long endTime = System.currentTimeMillis();
+        System.out.println("Ended");
+        System.out.println(endTime - startTime);
+
         String then = sdf.format(new Date());
         System.out.println(now);
         System.out.println(then);
         }
 
-    public static void printJson(Event event) throws IOException{
-        ObjectMapper mapper = new ObjectMapper();
-       //mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 
-        //System.out.println(mapper.writeValueAsString(event));
-
-    }
     }

@@ -1,6 +1,7 @@
 package com.cloudera.se.hbase.test;
 
-import com.cloudera.se.hbase.test.util.EventUtils;
+import com.cloudera.se.hbase.test.util.CEHUtils;
+import com.cloudera.se.hbase.test.util.Tester;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 
@@ -16,6 +17,7 @@ public class App {
             System.out.println("");
             System.out.println("Randomize");
             System.out.println("---------");
+            System.out.println("Create regionCount");
             return;
         }
 
@@ -25,7 +27,10 @@ public class App {
 
 
         if (cmd.equals("Randomize") || cmd.length() == 0) {
-            EventUtils.main(subArgs);
+            Tester.main(subArgs);
+        }
+        if (cmd.equals("Create")) {
+            CEHUtils.createCEHTables(subArgs[0]);
         }
         /*
         else if (cmd.equals("Producer")) {

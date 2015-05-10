@@ -1,12 +1,8 @@
 package com.cloudera.se.hbase.test.model;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
-import org.apache.hadoop.hbase.client.Put;
-import org.apache.hadoop.hbase.util.Bytes;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -207,13 +203,6 @@ public class Event
     */
     public static void randomize (Why why) {
         why.setEvDe(RandomStringUtils.randomAlphabetic(60));
-    }
-
-    public String getPayLoad() throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        //mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-
-        return mapper.writeValueAsString(this);
     }
 
 }
